@@ -9,6 +9,8 @@
   "author": "Suz Hinton",
   "license": "MIT",
   "dependencies": {
+    "base64-img": "^1.0.3",
+    "run-headless-chromium": "^0.1.1",
     "speaker": "^0.3.0",
     "web-audio-api": "^0.2.2"
   }

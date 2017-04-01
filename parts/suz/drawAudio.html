@@ -1,0 +1,55 @@
+<html>
+  <head>
+    <title>drawing audio frequencies on canvas</title>
+  </head>
+  <body>
+    <canvas id="canvas" width="1000" height="400"></canvas>
+    <audio id="player" src="/sound.mp3"></audio>
+
+    <script>
+      var canvas = document.getElementById('canvas');
+      var canvasContext = canvas.getContext('2d');
+      var audioContext  = new AudioContext();
+
+      var colours = [
+        '#ef8f82', '#efba82', '#efe982', '#deef82', '#caef82', '#abef82', '#94ef82', '#82ef83', '#82ef97', '#82efad',
+        '#82efca', '#7de8d0', '#7ce8e4', '#7cdbe8', '#7cc9e8', '#7cb5e8', '#7ca1e8', '#7c8ee8', '#7d7ce8', '#8a7ce8',
+        '#9a7ce8', '#a97ce8', '#b97ce8', '#c47ce8', '#d77ce8', '#e87ce6', '#e87cce', '#e87cba', '#e87ca7',
+        '#e87c88', '#e87c7c'
+      ];
+
+      // Create the analyser
+      var analyser = audioContext.createAnalyser();
+      analyser.fftSize = 64;
+      var frequencyData = new Uint8Array(analyser.frequencyBinCount);
+      var counter = 0;
+
+      // Get the frequency data and update the visualisation
+      function update() {
+        counter += 1;
+        requestAnimationFrame(update);
+        analyser.getByteFrequencyData(frequencyData);
+
+        colours.forEach(function (colour, index) {
+          canvasContext.fillStyle = colour;
+          canvasContext.fillRect(counter, frequencyData[index], 2, 2);
+        });
+      };
+
+      document.getElementById('player').addEventListener('canplay', function() {
+        var source = audioContext.createMediaElementSource(this);
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+        this.play();
+      });
+
+      update();
+
+      setTimeout(function() {
+        console.info('imgdata:' + canvas.toDataURL());
+        console.info("All tests completed!0");
+      }, 20 * 1000);   
+
+    </script>
+  </body>
+</html>
